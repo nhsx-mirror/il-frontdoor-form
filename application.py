@@ -1,12 +1,15 @@
 import os
-from bottle import run, template, route
+from bottle import Bottle, run, template, route
 
-@route('/')
+application = Bottle()
+
+@application.route('/')
 def index():
     return "Hello World"
 
 def main():
     port = os.getenv('PORT', '3000')
-    run(host="localhost", port=int(port))
+    application.run(host="localhost", port=int(port))
 
-main()
+if __name__ == "__main__":
+    main()

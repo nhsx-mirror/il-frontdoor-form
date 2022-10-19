@@ -6,5 +6,5 @@ deps: venv/bin/activate
 .PHONY: deps
 
 up:
-	./exec python app.py
+	./exec python application.py
 .PHONY: up
