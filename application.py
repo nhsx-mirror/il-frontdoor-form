@@ -3,9 +3,22 @@ from bottle import Bottle, run, template, route
 
 application = Bottle()
 
+form_template = """
+<!doctype html>
+<html>
+  <head>
+
+  </head>
+  <body>
+    <h1>Hello World</h1>
+
+  </body>
+</html>
+"""
+
 @application.route('/')
 def index():
-    return "Hello World"
+    return form_template
 
 def main():
     port = os.getenv('PORT', '3000')
