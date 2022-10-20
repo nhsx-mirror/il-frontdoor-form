@@ -11,7 +11,9 @@ form_template = """
   </head>
   <body>
     <h1>Hello World</h1>
-
+    <form action="//post" method="post">
+        <input type="submit" value="Send an email">
+    </form>
   </body>
 </html>
 """
