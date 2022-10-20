@@ -1,7 +1,10 @@
 import os
 from bottle import Bottle, run, template, route
+from datetime import datetime
+import boto3
 
 application = Bottle()
+client = boto3.client('sns', region_name='eu-west-2')
 
 form_template = """
 <!doctype html>
@@ -18,12 +21,23 @@ form_template = """
 </html>
 """
 
+def send_message():
+    msg = f"Test message {datetime.now().isoformat()}"
+
+    response = client.publish(
+        TopicArn='arn:aws:sns:eu-west-2:521826052428:test-topic',
+        Message=msg,
+        Subject=msg
+    )
+    print(response)
+
 @application.route('/')
 def index():
     return form_template
 
 @application.post('/post')
 def send():
+    send_message()
     return "thanks"
 
 def main():
