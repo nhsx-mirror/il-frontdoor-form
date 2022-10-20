@@ -21,6 +21,19 @@ form_template = """
 </html>
 """
 
+thanks_template = """
+<!doctype html>
+<html>
+  <head>
+
+  </head>
+  <body>
+    <h1>Thanks</h1>
+    <a href="/">back</a>
+  </body>
+</html>
+"""
+
 def send_message():
     msg = f"Test message {datetime.now().isoformat()}"
 
@@ -38,7 +51,11 @@ def index():
 @application.post('/post')
 def send():
     send_message()
-    return "thanks"
+    redirect('/thanks')
+
+@application.route('/thanks')
+def thanks():
+    return thanks_template
 
 def main():
     port = os.getenv('PORT', '3000')
