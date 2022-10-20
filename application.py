@@ -11,7 +11,7 @@ form_template = """
   </head>
   <body>
     <h1>Hello World</h1>
-    <form action="//post" method="post">
+    <form action="/post" method="post">
         <input type="submit" value="Send an email">
     </form>
   </body>
@@ -21,6 +21,10 @@ form_template = """
 @application.route('/')
 def index():
     return form_template
+
+@application.post('/post')
+def send():
+    return "thanks"
 
 def main():
     port = os.getenv('PORT', '3000')
