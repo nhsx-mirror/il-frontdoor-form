@@ -29,10 +29,7 @@ form_template = """
     <meta name="msapplication-square310x310logo" content="/static/assets/favicons/largetile-310x310.png">
   </head>
   <body>
-    <h1>Hello World</h1>
-    <form action="/post" method="post">
-        <input type="submit" value="Send an email">
-    </form>
+    {{!body}}
   </body>
 </html>
 """
@@ -62,7 +59,12 @@ def send_message(isotime):
 
 @application.route('/')
 def index():
-    return form_template
+    return template(form_template, body="""
+    <h1>Hello World</h1>
+    <form action="/post" method="post">
+        <input type="submit" value="Send an email">
+    </form>
+    """)
 
 @application.route('/static/<filename:path>')
 def serve_static(filename):
