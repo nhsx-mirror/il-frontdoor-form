@@ -2,6 +2,7 @@ import os
 from bottle import Bottle, run, template, route, redirect, static_file
 from datetime import datetime
 import boto3
+from random import randint
 
 application = Bottle()
 client = boto3.client('sns', region_name='eu-west-2')
@@ -11,6 +12,12 @@ def html_form_group(content):
     <div class="nhsuk-form-group">
       {content}
     </div>
+    """
+def html_fieldset(content):
+    return f"""
+    <fieldset class="nhsuk-fieldset">
+      {content}
+    </fieldset>
     """
 
 def html_text_input(name, label):
@@ -28,15 +35,72 @@ def html_text_area(name, label, hint=None):
       </label>
     """
     html_hint = f"""
-      <div class="nhsuk-hint" id="example-hint">
+      <div class="nhsuk-hint" id="{name}-hint">
         Do not include personal or financial information, for example, your National Insurance number or credit card details.
       </div>
     """ if hint else ""
+
     html_textarea = f"""
-      <textarea class="nhsuk-textarea" id="example" name="example" rows="5" aria-describedby="example-hint"></textarea>
+      <textarea class="nhsuk-textarea" id="{name}" name="{name}" rows="5" aria-describedby="{name}-hint"></textarea>
     """
 
     return html_form_group(html_label + html_hint + html_textarea)
+
+def html_radio_item(name, value, label):
+    input_id = f"{name}-{randint(1, 1000000)}"
+
+    return f"""
+      <div class="nhsuk-radios__item">
+        <input class="nhsuk-radios__input" id="{input_id}" name="{name}" type="radio" value="{value}">
+        <label class="nhsuk-label nhsuk-radios__label" for="{input_id}">
+          {label}
+        </label>
+      </div>
+    """
+
+def html_legend(legend):
+    return f"""
+    <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">
+      {legend}
+    </legend>
+    """
+
+def html_radios(name, legend, options):
+    html_options = '<div class="nhsuk_radios">' +\
+        "\n".join([html_radio_item(name, o['value'], o['label']) for o in options]) +\
+        '</div>'
+
+    return html_form_group(html_fieldset(html_legend(legend) + html_options))
+
+def html_checkbox_item(name, value, label):
+    return f"""
+      <div class="nhsuk-checkboxes__item">
+        <input class="nhsuk-checkboxes__input" id="{name}" name="{name}" type="checkbox" value="{value}">
+        <label class="nhsuk-label nhsuk-checkboxes__label" for="{name}">
+          {label}
+        </label>
+      </div>
+    """
+
+def html_checkbox(name, value, label, hint=None):
+    html_hint = f"""
+      <div class="nhsuk-hint" id="{name}-hint">
+        {hint}
+      </div>
+    """ if hint else ''
+
+    return html_form_group(html_fieldset(f"""
+      {html_hint}
+      <div class="nhsuk-checkboxes">
+        {html_checkbox_item(name, value, label)}
+      </div>"""))
+
+def html_checkboxes(name, legend, options):
+    html_options = '<div class="nhsuk_checkboxes">' +\
+        "\n".join([html_checkbox_item(name, o['value'], o['label']) for o in options]) +\
+        '</div>'
+
+    return html_form_group(html_fieldset(html_legend(legend) + html_options))
 
 page_template = """
 <!doctype html>
@@ -123,10 +187,11 @@ page_template = """
 """
 
 form_template=f"""
-<h1>Hello World</h1>
+<h1>Let us help</h1>
+
 <form action="/post" method="post">
   <p>
-    Our roadmap is shaped by real challenges and ideas from the health and social care system, and we want to hear from ANYONE working within it.
+    Our roadmap is shaped by real challenges and ideas from the health and social care system, and we want to hear from anyone working within it.
     If you have a challenge or idea that you think could be answered with innovative thinking and technology, but you aren't sure exactly how, we'd love to hear about it.  
   </p>
 
@@ -155,8 +220,32 @@ form_template=f"""
   {html_text_input('role', 'What is your role?')}
   {html_text_input('place_of_work', 'What is your place of work?')}
   {html_text_area('challenge', 'In 100 words or less, describe the challenge.')}
-
-  <input type="submit" value="Send an email">
+  {html_text_area('problem_impact', 'In 100 words or less, describe the impact on patients and/or staff.')}
+  {html_text_area('current', 'In 100 words or less, describe what is currently being done to help ease this problem.')}
+  {html_text_area('solution_impact', 'In 100 words or less, describe the impact of solving this challenge.')}
+  {html_checkbox('has_idea', 'true', 'Click if you have an idea that could help solve this challenge.')}
+  {html_text_area('idea', 'What is your idea?')}
+  {html_checkbox('has_been_tested', 'true', 'Click if your idea has been tested before.')}
+  {html_text_area('evidence', 'What evidence, if any, do you have that your idea would help?')}
+  {html_checkboxes('focus_areas', 'Which of our focus areas does the problem apply to?',
+    [{'value': 'burden', 'label': 'Reduce the burden on staff'},
+     {'value': 'info', 'label': 'Help access clinical information'},
+     {'value': 'productivity', 'label': 'Improve health and care productivity'},
+     {'value': 'access', 'label': 'Provide tools to access services directly'},
+     {'value': 'safety', 'label': 'Improve safety across health and care systems'}])}
+  {html_radios('involvement', 'If we pursue this problem, how involved would you like to be?',
+    [{'value': 'not', 'label': 'I just want to submit a problem'},
+     {'value': 'up_to_date', 'label': 'Keep me up to date on progress'},
+     {'value': 'involve', 'label': "Involve me when I'm needed"},
+     {'value': 'heavily', 'label': "I'd like to be heavily involved"}])}
+  {html_radios('can_test', 'If you work in a care setting, could we test any solutions with you?',
+     [{'value': 'yes', 'label': 'Yes'},
+      {'value': 'maybe', 'label': 'Maybe'},
+      {'value': 'no', 'label': 'No'},
+      {'value': 'not_care', 'label': "I don't work in a care setting"}])}
+  {html_checkbox('consent', 'true', 'Click here to agree', 
+    hint='Your personal data will be stored in compliance with the NHSX Privacy Policy.  It will be used for the purposes of evaluating the information you send us, which may include contacting you in the future to discuss this challenge or other related challenges.  We may also invite you to anonymously provide feedback on your experience in order to improve this service. Please address any data protection requests to <a href="mailto:innovation-lab@nhsx.nhs.uk">innovation-lab@nhsx.nhs.uk</a>.')}
+  <input type="submit" class="nhsuk-button" value="Submit">
 </form>
 """
 
