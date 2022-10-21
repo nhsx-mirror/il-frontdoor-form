@@ -34,8 +34,8 @@ thanks_template = """
 </html>
 """
 
-def send_message():
-    msg = f"Test message {datetime.now().isoformat()}"
+def send_message(isotime):
+    msg = f"Test message {isotime}"
 
     response = client.publish(
         TopicArn='arn:aws:sns:eu-west-2:521826052428:test-topic',
@@ -50,8 +50,9 @@ def index():
 
 @application.post('/post')
 def send():
-    send_message()
-    redirect('/thanks')
+    isotime = datetime.now().isoformat()
+    send_message(isotime)
+    redirect(f'/thanks?isotime={isotime}')
 
 @application.route('/thanks')
 def thanks():
