@@ -1,5 +1,5 @@
 import os
-from bottle import Bottle, run, template, route, redirect
+from bottle import Bottle, run, template, route, redirect, static_file
 from datetime import datetime
 import boto3
 
@@ -10,7 +10,23 @@ form_template = """
 <!doctype html>
 <html>
   <head>
+    <!-- Styles -->
+    <link rel="stylesheet" href="/static/css/nhsuk-6.1.2.min.css">
 
+    <!-- Scripts -->
+    <script src="/static/js/nhsuk-6.1.2.min.js" defer></script>
+
+    <!-- Favicons -->
+    <link rel="shortcut icon" href="/static/assets/favicons/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="/static/assets/favicons/apple-touch-icon-180x180.png">
+    <link rel="mask-icon" href="/static/assets/favicons/favicon.svg" color="#005eb8">
+    <link rel="icon" sizes="192x192" href="/static/assets/favicons/favicon-192x192.png">
+    <meta name="msapplication-TileImage" content="/static/assets/favicons/mediumtile-144x144.png">
+    <meta name="msapplication-TileColor" content="#005eb8">
+    <meta name="msapplication-square70x70logo" content="/static/assets/favicons/smalltile-70x70.png">
+    <meta name="msapplication-square150x150logo" content="/static/assets/favicons/mediumtile-150x150.png">
+    <meta name="msapplication-wide310x150logo" content="/static/assets/favicons/widetile-310x150.png">
+    <meta name="msapplication-square310x310logo" content="/static/assets/favicons/largetile-310x310.png">
   </head>
   <body>
     <h1>Hello World</h1>
@@ -47,6 +63,10 @@ def send_message(isotime):
 @application.route('/')
 def index():
     return form_template
+
+@application.route('/static/<filename:path>')
+def serve_static(filename):
+    return static_file(filename, root='static/')
 
 @application.post('/post')
 def send():
