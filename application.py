@@ -6,7 +6,39 @@ import boto3
 application = Bottle()
 client = boto3.client('sns', region_name='eu-west-2')
 
-form_template = """
+def html_form_group(content):
+    return f"""
+    <div class="nhsuk-form-group">
+      {content}
+    </div>
+    """
+
+def html_text_input(name, label):
+    return html_form_group(f"""
+      <label class="nhsuk-label" for="{name}">
+        {label}
+      </label>
+      <input class="nhsuk-input" id="{name}" name="{name}" type="text">
+    """)
+
+def html_text_area(name, label, hint=None):
+    html_label = f"""
+      <label class="nhsuk-label" for="{name}">
+        {label}
+      </label>
+    """
+    html_hint = f"""
+      <div class="nhsuk-hint" id="example-hint">
+        Do not include personal or financial information, for example, your National Insurance number or credit card details.
+      </div>
+    """ if hint else ""
+    html_textarea = f"""
+      <textarea class="nhsuk-textarea" id="example" name="example" rows="5" aria-describedby="example-hint"></textarea>
+    """
+
+    return html_form_group(html_label + html_hint + html_textarea)
+
+page_template = """
 <!doctype html>
 <html>
   <head>
@@ -90,6 +122,45 @@ form_template = """
 </html>
 """
 
+form_template=f"""
+<h1>Hello World</h1>
+<form action="/post" method="post">
+  <p>
+    Our roadmap is shaped by real challenges and ideas from the health and social care system, and we want to hear from ANYONE working within it.
+    If you have a challenge or idea that you think could be answered with innovative thinking and technology, but you aren't sure exactly how, we'd love to hear about it.  
+  </p>
+
+  <p>
+    Anyone working within the English health and social care system is eligible to submit.
+  </p>
+
+  <p>
+    Please note that we don't take submissions relating to existing solutions or products.
+    Please see our 
+    <a href="https://www.nhsx.nhs.uk/nhsx-innovation-lab/send-us-your-challenges/">
+      guidance
+    </a>
+    on what challenges are/aren't suitable.
+  </p>
+
+  <p>
+    All submissions will be handled in accordance with the
+    <a href="https://www.nhsx.nhs.uk/privacy-policy">
+      NHSX data protection policy.
+    </a>
+    Please do not include any confidential or patient information.
+  </p>
+
+  {html_text_input('email', 'What is your email address?')}
+  {html_text_input('role', 'What is your role?')}
+  {html_text_input('place_of_work', 'What is your place of work?')}
+  {html_text_area('challenge', 'In 100 words or less, describe the challenge.')}
+
+  <input type="submit" value="Send an email">
+</form>
+"""
+
+
 def send_message(isotime):
     msg = f"Test message {isotime}"
 
@@ -102,12 +173,7 @@ def send_message(isotime):
 
 @application.route('/')
 def index():
-    return template(form_template, body="""
-    <h1>Hello World</h1>
-    <form action="/post" method="post">
-        <input type="submit" value="Send an email">
-    </form>
-    """)
+    return template(page_template, body=template(form_template))
 
 @application.route('/static/<filename:path>')
 def serve_static(filename):
@@ -121,7 +187,7 @@ def send():
 
 @application.route('/thanks')
 def thanks():
-    return template(form_template, body="""
+    return template(page_template, body="""
     <h1>Thanks</h1>
     <a href="/">back</a>
     """)
