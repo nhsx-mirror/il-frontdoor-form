@@ -269,6 +269,14 @@ In 100 words or less, describe the challenge.
 ---------------------------------------------
 {{challenge}}
 
+In 100 words or less, describe the impact on patients and/or staff.
+-------------------------------------------------------------------
+{{problem_impact}}
+
+In 100 words or less, describe what is currently being done to help ease this problem.
+--------------------------------------------------------------------------------------
+{{current}}
+
 In 100 words or less, describe the impact of solving this challenge.
 --------------------------------------------------------------------
 {{solution_impact}}
@@ -308,6 +316,8 @@ def render_email(params):
       role=params.get('role'),
       place_of_work=params.get('place_of_work'),
       challenge=params.get('challenge'),
+      problem_impact=params.get('problem_impact'),
+      current=params.get('current'),
       solution_impact=params.get('solution_impact'),
       has_idea='Yes' if params.get('has_idea') == 'true' else 'No',
       idea=params.get('idea'),
