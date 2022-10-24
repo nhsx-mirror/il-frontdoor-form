@@ -1,5 +1,5 @@
 import os
-from bottle import Bottle, run, template, route, redirect, static_file
+from bottle import Bottle, run, template, route, redirect, static_file, request
 from datetime import datetime
 import boto3
 from random import randint
@@ -249,14 +249,83 @@ form_template=f"""
 </form>
 """
 
+email_template = """
+Front Door Challenge Submission
+===============================
 
-def send_message(isotime):
-    msg = f"Test message {isotime}"
+What is your email address?
+---------------------------
+{{email}}
+
+What is your role?
+------------------
+{{role}}
+
+What is your place of work?
+---------------------------
+{{place_of_work}}
+
+In 100 words or less, describe the challenge.
+---------------------------------------------
+{{challenge}}
+
+In 100 words or less, describe the impact of solving this challenge.
+--------------------------------------------------------------------
+{{solution_impact}}
+
+Do you have an idea that could help solve this challenge?
+---------------------------------------------------------
+{{has_idea}}
+
+What is your idea?
+------------------
+{{idea}}
+
+Has your idea been tested before?
+---------------------------------
+{{has_been_tested}}
+
+What evidence, if any, do you have that your idea would help?
+-------------------------------------------------------------
+{{evidence}}
+
+Which of our focus areas does the problem apply to?
+---------------------------------------------------
+{{focus_areas}}
+
+If we pursue this problem, how involved would you like to be?
+-------------------------------------------------------------
+{{involvement}}
+
+If you work in a care setting, could we test any solutions with you?
+--------------------------------------------------------------------
+{{can_test}}
+"""
+
+def render_email(params):
+    return template(email_template,
+      email=params.get('email'),
+      role=params.get('role'),
+      place_of_work=params.get('place_of_work'),
+      challenge=params.get('challenge'),
+      solution_impact=params.get('solution_impact'),
+      has_idea='Yes' if params.get('has_idea') == 'true' else 'No',
+      idea=params.get('idea'),
+      has_been_tested='Yes' if params.get('has_been_tested') == 'true' else 'No',
+      evidence=params.get('evidence'),
+      focus_areas=", ".join(params.getall('focus_areas')),
+      involvement=params.get('involvement'),
+      can_test=params.get('can_test'))
+
+def send_message(params):
+    isotime = datetime.now().isoformat()
+    subj = f"Front door submission at {isotime}"
+    msg = render_email(request.params)
 
     response = client.publish(
         TopicArn='arn:aws:sns:eu-west-2:521826052428:test-topic',
         Message=msg,
-        Subject=msg
+        Subject=subj
     )
     print(response)
 
@@ -270,9 +339,8 @@ def serve_static(filename):
 
 @application.post('/post')
 def send():
-    isotime = datetime.now().isoformat()
-    send_message(isotime)
-    redirect(f'/thanks?isotime={isotime}')
+    send_message(request.params)
+    redirect(f'/thanks')
 
 @application.route('/thanks')
 def thanks():
