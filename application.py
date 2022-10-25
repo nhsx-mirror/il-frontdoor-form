@@ -3,7 +3,9 @@ from bottle import Bottle, run, template, route, redirect, static_file, request
 from datetime import datetime
 import boto3
 from random import randint
+from dotenv import load_dotenv
 
+load_dotenv()
 application = Bottle()
 client = boto3.client('sns', region_name='eu-west-2')
 
@@ -355,7 +357,7 @@ def send_message(params):
     msg = render_email(request.params)
 
     response = client.publish(
-        TopicArn='arn:aws:sns:eu-west-2:521826052428:test-topic',
+        TopicArn=os.getenv('FRONTDOOR_SNS_ARN'),
         Message=msg,
         Subject=subj
     )
