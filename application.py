@@ -102,6 +102,27 @@ def html_checkboxes(name, legend, options):
 
     return html_form_group(html_fieldset(html_legend(legend) + html_options))
 
+def html_conditional_button(name, checkbox_label, checkbox_hint, checkbox_value, button_label):
+    return f"""
+    <div class="nhsuk-hint" id="{name}-hint">
+        {checkbox_hint}
+    </div>
+    <div class="nhsuk-checkboxes nhsuk-checkboxes--conditional">
+        <div class="nhsuk-checkboxes__item">
+          <input class="nhsuk-checkboxes__input" id="{name}" name="{name}" type="checkbox" value="{checkbox_value}" aria-controls="conditional-{name}" aria-expanded="false">
+          <label class="nhsuk-label nhsuk-checkboxes__label" for="{name}">
+            {checkbox_label}
+          </label>
+        </div>
+
+        <div class="nhsuk-checkboxes__conditional nhsuk-checkboxes__conditional--hidden" id="conditional-{name}">
+          <div class="nhsuk-form-group">
+            <input type="submit" class="nhsuk-button" value="{button_label}">
+          </div>
+        </div>
+    </div>
+"""
+
 page_template = """
 <!doctype html>
 <html>
@@ -243,9 +264,10 @@ form_template=f"""
       {'value': 'maybe', 'label': 'Maybe'},
       {'value': 'no', 'label': 'No'},
       {'value': 'not_care', 'label': "I don't work in a care setting"}])}
-  {html_checkbox('consent', 'true', 'Click here to agree', 
-    hint='Your personal data will be stored in compliance with the NHSX Privacy Policy.  It will be used for the purposes of evaluating the information you send us, which may include contacting you in the future to discuss this challenge or other related challenges.  We may also invite you to anonymously provide feedback on your experience in order to improve this service. Please address any data protection requests to <a href="mailto:innovation-lab@nhsx.nhs.uk">innovation-lab@nhsx.nhs.uk</a>.')}
-  <input type="submit" class="nhsuk-button" value="Submit">
+  {html_conditional_button('consent', 'Click here to agree',
+    'Your personal data will be stored in compliance with the NHSX Privacy Policy.  It will be used for the purposes of evaluating the information you send us, which may include contacting you in the future to discuss this challenge or other related challenges.  We may also invite you to anonymously provide feedback on your experience in order to improve this service. Please address any data protection requests to <a href="mailto:innovation-lab@nhsx.nhs.uk">innovation-lab@nhsx.nhs.uk</a>.',
+    'true', 
+    'Submit')}
 </form>
 """
 
