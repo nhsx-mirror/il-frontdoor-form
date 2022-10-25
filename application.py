@@ -351,17 +351,19 @@ def render_email(params):
       involvement=params.get('involvement'),
       can_test=params.get('can_test'))
 
-def send_message(params):
-    isotime = datetime.now().isoformat()
-    subj = f"Front door submission at {isotime}"
-    msg = render_email(request.params)
-
+def send_email(subj, msg):
     response = client.publish(
         TopicArn=os.getenv('FRONTDOOR_SNS_ARN'),
         Message=msg,
         Subject=subj
     )
     print(response)
+
+def send_message(params):
+    isotime = datetime.now().isoformat()
+    subj = f"Front door submission at {isotime}"
+    msg = render_email(request.params)
+    send_email(subj, msg)
 
 @application.route('/')
 def index():
@@ -389,6 +391,37 @@ def thanks():
         If you indicated that you wanted to be involved, we will get in touch about our next steps.
         Please don't hesitate to send us more challenges when you find them.
     </p>
+    """)
+
+@application.route('/_dashboard')
+def dashboard():
+    return template(page_template, body="""
+    <h1>Service Dashboard</h1>
+
+    <form action="/smoke" method="post">
+      <input type="submit" class="nhsuk-button" value="Delivery test"/>
+    </form>
+    """)
+
+@application.post('/smoke')
+def smoke():
+    isotime = datetime.now().isoformat()
+
+    send_email(f"Front door delivery test email {isotime}",
+    f"""
+        This is a delivery test email.
+
+        Sent at {isotime}.
+    """)
+
+    return template(page_template, body=f"""
+    <p>
+        Delivery test message sent at {isotime}.
+    </p>
+
+    <form action="/smoke" method="post">
+      <input type="submit" class="nhsuk-button" value="Send another"/>
+    </form>
     """)
 
 def main():
