@@ -238,15 +238,13 @@ form_template=f"""
   <p>
     We don't take submissions relating to existing solutions or products.
     Please see our
-    <a href="https://www.nhsx.nhs.uk/nhsx-innovation-lab/send-us-your-challenges/">guidance</a>
+    <a href="https://transform.england.nhs.uk/innovation-lab/send-us-your-challenges/">guidance</a>
     on what challenges are suitable.
   </p>
 
   <p>
-    All submissions will be handled in accordance with the
-    <a href="https://www.nhsx.nhs.uk/privacy-policy">
-      NHSX data protection policy.
-    </a>
+    All submissions will be handled in accordance with our
+    <a href="https://transform.england.nhs.uk/privacy-policy/">data protection policy</a>.
     Please do not include any confidential or patient information.
   </p>
 
