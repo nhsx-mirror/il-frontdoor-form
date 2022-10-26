@@ -134,7 +134,8 @@ def html_conditional_checkbox(name, checkbox_value, checkbox_label, conditional_
     </div>
 """
 
-page_template = 'page'
+def page(**kwargs):
+    return template('page', **kwargs)
 
 form_template=f"""
 <h1>Let us help</h1>
@@ -290,7 +291,7 @@ def send_message(params):
 
 @application.route('/')
 def index():
-    return template(page_template, body=template(form_template))
+    return page(body=template(form_template))
 
 @application.route('/static/<filename:path>')
 def serve_static(filename):
@@ -303,7 +304,7 @@ def send():
 
 @application.route('/thanks')
 def thanks():
-    return template(page_template, body="""
+    return page(body="""
     <h1>Thank you!</h1>
 
     <p>
@@ -318,7 +319,7 @@ def thanks():
 
 @application.route('/_dashboard')
 def dashboard():
-    return template(page_template, body="""
+    return page(body="""
     <h1>Service Dashboard</h1>
 
     <form action="/smoke" method="post">
@@ -337,7 +338,7 @@ def smoke():
         Sent at {isotime}.
     """)
 
-    return template(page_template, body=f"""
+    return page(body=f"""
     <p>
         Delivery test message sent at {isotime}.
     </p>
