@@ -104,11 +104,22 @@ def html_checkboxes(name, legend, options):
 
     return html_form_group(html_fieldset(html_legend(legend) + html_options))
 
-def html_conditional_button(name, checkbox_label, checkbox_hint, checkbox_value, button_label):
+def html_button(value):
     return f"""
-    <div class="nhsuk-hint" id="{name}-hint">
-        {checkbox_hint}
-    </div>
+        <div class="nhsuk-form-group">
+            <input type="submit" class="nhsuk-button" value="{value}">
+        </div>
+    """
+
+def html_conditional_checkbox(name, checkbox_value, checkbox_label, conditional_content, hint=None):
+    html_hint = f"""
+      <div class="nhsuk-hint" id="{name}-hint">
+        {hint}
+      </div>
+    """ if hint else ''
+
+    return f"""
+    {html_hint}
     <div class="nhsuk-checkboxes nhsuk-checkboxes--conditional">
         <div class="nhsuk-checkboxes__item">
           <input class="nhsuk-checkboxes__input" id="{name}" name="{name}" type="checkbox" value="{checkbox_value}" aria-controls="conditional-{name}" aria-expanded="false">
@@ -118,9 +129,7 @@ def html_conditional_button(name, checkbox_label, checkbox_hint, checkbox_value,
         </div>
 
         <div class="nhsuk-checkboxes__conditional nhsuk-checkboxes__conditional--hidden" id="conditional-{name}">
-          <div class="nhsuk-form-group">
-            <input type="submit" class="nhsuk-button" value="{button_label}">
-          </div>
+            {conditional_content}
         </div>
     </div>
 """
@@ -157,11 +166,11 @@ page_template = """
   <body>
     <script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
     <a class="nhsuk-skip-link" href="#maincontent">Skip to main content</a>
-    
+
     <header class="nhsuk-header" role="banner">
       <div class="nhsuk-width-container nhsuk-header__container">
         <div class="nhsuk-header__logo nhsuk-header__logo--only"><a class="nhsuk-header__link nhsuk-header__link--service " href="/" aria-label="NHS homepage">
-        
+
           <svg class="nhsuk-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 16" height="40" width="100">
             <path class="nhsuk-logo__background" fill="#005eb8" d="M0 0h40v16H0z"></path>
             <path class="nhsuk-logo__text" fill="#fff" d="M3.9 1.5h4.4l2.6 9h.1l1.8-9h3.3l-2.8 13H9l-2.7-9h-.1l-1.8 9H1.1M17.3 1.5h3.6l-1 4.9h4L25 1.5h3.5l-2.7 13h-3.5l1.1-5.6h-4.1l-1.2 5.6h-3.4M37.7 4.4c-.7-.3-1.6-.6-2.9-.6-1.4 0-2.5.2-2.5 1.3 0 1.8 5.1 1.2 5.1 5.1 0 3.6-3.3 4.5-6.4 4.5-1.3 0-2.9-.3-4-.7l.8-2.7c.7.4 2.1.7 3.2.7s2.8-.2 2.8-1.5c0-2.1-5.1-1.3-5.1-5 0-3.4 2.9-4.4 5.8-4.4 1.6 0 3.1.2 4 .6"></path>
@@ -173,7 +182,7 @@ page_template = """
         </div>
       </div>
     </header>
-    
+
     <nav class="nhsuk-breadcrumb" aria-label="Breadcrumb">
       <div class="nhsuk-width-container">
         <ol class="nhsuk-breadcrumb__list">
@@ -215,7 +224,7 @@ form_template=f"""
 <form action="/post" method="post">
   <p>
     Our roadmap is shaped by real challenges and ideas from the health and social care system, and we want to hear from anyone working within it.
-    If you have a challenge or idea that you think could be answered with innovative thinking and technology, but you aren't sure exactly how, we'd love to hear about it.  
+    If you have a challenge or idea that you think could be answered with innovative thinking and technology, but you aren't sure exactly how, we'd love to hear about it.
   </p>
 
   <p>
@@ -224,7 +233,7 @@ form_template=f"""
 
   <p>
     Please note that we don't take submissions relating to existing solutions or products.
-    Please see our 
+    Please see our
     <a href="https://www.nhsx.nhs.uk/nhsx-innovation-lab/send-us-your-challenges/">
       guidance
     </a>
@@ -246,10 +255,10 @@ form_template=f"""
   {html_text_area('problem_impact', 'In 100 words or less, describe the impact on patients and/or staff.')}
   {html_text_area('current', 'In 100 words or less, describe what is currently being done to help ease this problem.')}
   {html_text_area('solution_impact', 'In 100 words or less, describe the impact of solving this challenge.')}
-  {html_checkbox('has_idea', 'true', 'Click if you have an idea that could help solve this challenge.')}
-  {html_text_area('idea', 'What is your idea?')}
-  {html_checkbox('has_been_tested', 'true', 'Click if your idea has been tested before.')}
-  {html_text_area('evidence', 'What evidence, if any, do you have that your idea would help?')}
+  {html_conditional_checkbox('has_idea', 'true', 'Click if you have an idea that could help solve this challenge.',
+    html_text_area('idea', 'What is your idea?'))}
+  {html_conditional_checkbox('has_been_tested', 'true', 'Click if your idea has been tested before.',
+    html_text_area('evidence', 'What evidence could you provide that your idea would help?'))}
   {html_checkboxes('focus_areas', 'Which of our focus areas does the problem apply to?',
     [{'value': 'burden', 'label': 'Reduce the burden on staff'},
      {'value': 'info', 'label': 'Help access clinical information'},
@@ -266,10 +275,10 @@ form_template=f"""
       {'value': 'maybe', 'label': 'Maybe'},
       {'value': 'no', 'label': 'No'},
       {'value': 'not_care', 'label': "I don't work in a care setting"}])}
-  {html_conditional_button('consent', 'Click here to agree',
-    'Your personal data will be stored in compliance with the NHSX Privacy Policy.  It will be used for the purposes of evaluating the information you send us, which may include contacting you in the future to discuss this challenge or other related challenges.  We may also invite you to anonymously provide feedback on your experience in order to improve this service. Please address any data protection requests to <a href="mailto:innovation-lab@nhsx.nhs.uk">innovation-lab@nhsx.nhs.uk</a>.',
-    'true', 
-    'Submit')}
+  {html_conditional_checkbox('consent', 'true',
+    'Click here to agree',
+    html_button('Submit'),
+    hint='Your personal data will be stored in compliance with the NHSX Privacy Policy.  It will be used for the purposes of evaluating the information you send us, which may include contacting you in the future to discuss this challenge or other related challenges.  We may also invite you to anonymously provide feedback on your experience in order to improve this service. Please address any data protection requests to <a href="mailto:innovation-lab@nhsx.nhs.uk">innovation-lab@nhsx.nhs.uk</a>.')}
 </form>
 """
 
@@ -382,7 +391,7 @@ def send():
 def thanks():
     return template(page_template, body="""
     <h1>Thank you!</h1>
-    
+
     <p>
         Thank you for your input.  We appreciate the effort you've gone to in making us aware of your challenge.
     </p>
