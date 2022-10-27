@@ -40,6 +40,11 @@ CONTRIBUTING
 
 Open an issue or a PR to contribute.  If you want to check in before doing so, see AUTHOR below.
 
+SECURITY DISCLOSURE
+-------------------
+
+See AUTHOR below.
+
 AUTHOR
 ------
 
