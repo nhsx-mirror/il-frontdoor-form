@@ -30,7 +30,7 @@ def html_text_area(name, label, hint=None):
     """
     html_hint = f"""
       <div class="nhsuk-hint" id="{name}-hint">
-        Do not include personal or financial information, for example, your National Insurance number or credit card details.
+        {hint}
       </div>
     """ if hint else ""
 

@@ -42,10 +42,14 @@ form_template=f"""
   {html_text_input('email', 'What is your email address?')}
   {html_text_input('role', 'What is your role?')}
   {html_text_input('place_of_work', 'What is your place of work?')}
-  {html_text_area('challenge', 'In 100 words or less, describe the challenge.')}
-  {html_text_area('problem_impact', 'In 100 words or less, describe the impact on patients and/or staff.')}
-  {html_text_area('current', 'In 100 words or less, describe what is currently being done to help ease this problem.')}
-  {html_text_area('solution_impact', 'In 100 words or less, describe the impact of solving this challenge.')}
+  {html_text_area('challenge', 'Describe the challenge or problem (100 words max)',
+    hint="e.g. GPs don't have full clarity on what over the counter medicines their patients are taking")}
+  {html_text_area('problem_impact', 'What impact does it have on patients and/or staff? (100 words max)',
+    hint="e.g. Patients may be prescribed medications that interact with their over the counter medicines causing risks to their health.")}
+  {html_text_area('current', 'What is currently being done to help ease this problem? (100 words max)',
+    hint="e.g. GPs are having to spend considerable time repeatedly asking patients what over the counter medicines they have recently taken.")}
+  {html_text_area('solution_impact', 'What would be the impact of solving this challenge? (100 words max)',
+   hint="e.g. We could improve overall patient safety and reduce the risk of dangerous drug interactions.")}
   {html_conditional_checkbox('has_idea', 'true', 'Click if you have an idea that could help solve this challenge.',
     html_text_area('idea', 'What is your idea?'))}
   {html_conditional_checkbox('has_been_tested', 'true', 'Click if your idea has been tested before.',
