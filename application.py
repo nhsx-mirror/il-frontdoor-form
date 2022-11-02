@@ -14,7 +14,7 @@ def page(**kwargs):
     return template('page', **kwargs)
 
 form_template=f"""
-<h1>Let us help</h1>
+<h1>Submit a challenge or idea</h1>
 
 <form action="/post" method="post">
   <p>
