@@ -128,10 +128,8 @@ def html_conditional_checkbox(name, checkbox_value, checkbox_label, conditional_
 
 def html_conditional_radios(name, legend, conditional_content):
   return html_form_group(html_fieldset(f"""
-    <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--l">
-      <h1 class="nhsuk-fieldset__heading">
-        {legend}
-      </h1>
+    <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">
+      {legend}
     </legend>
     <div class="nhsuk-radios nhsuk-radios--conditional">
 
