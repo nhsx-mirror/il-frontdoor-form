@@ -13,6 +13,42 @@ client = boto3.client('sns', region_name='eu-west-2')
 def page(**kwargs):
     return template('page', **kwargs)
 
+questions = [
+    html_text_input('email', 'What is your email address?'),
+    html_text_input('role', 'What is your role?'),
+    html_text_input('place_of_work', 'What is your place of work?'),
+    html_text_area('challenge', 'Describe the challenge or problem (100 words max)',
+        hint="e.g. GPs don't have full clarity on what over the counter medicines their patients are taking"),
+    html_text_area('problem_impact', 'What impact does it have on patients and/or staff? (100 words max)',
+        hint="e.g. Patients may be prescribed medications that interact with their over the counter medicines causing risks to their health."),
+    html_text_area('current', 'What is currently being done to help ease this problem? (100 words max)',
+        hint="e.g. GPs are having to spend considerable time repeatedly asking patients what over the counter medicines they have recently taken."),
+    html_text_area('solution_impact', 'What would be the impact of solving this challenge? (100 words max)',
+        hint="e.g. We could improve overall patient safety and reduce the risk of dangerous drug interactions."),
+    html_conditional_radios('has_idea', 'Do you have an idea that could help solve this challenge?',
+        html_text_area('idea', 'What is your idea?')),
+    html_conditional_radios('has_been_tested', 'Has your idea has been tested before?',
+        html_text_area('evidence', 'What evidence could you provide that your idea would help?')),
+    html_checkboxes('focus_areas', 'Which of our focus areas does the problem apply to?',
+        [{'value': 'burden', 'label': 'Reduce the burden on staff'},
+         {'value': 'info', 'label': 'Help access clinical information'},
+         {'value': 'productivity', 'label': 'Improve health and care productivity'},
+         {'value': 'access', 'label': 'Provide tools to access services directly'},
+         {'value': 'safety', 'label': 'Improve safety across health and care systems'}]),
+    html_radios('involvement', 'If we pursue this problem, how involved would you like to be?',
+        [{'value': 'not', 'label': 'I just want to submit a problem'},
+         {'value': 'up_to_date', 'label': 'Keep me up to date on progress'},
+         {'value': 'involve', 'label': "Involve me when I'm needed"},
+         {'value': 'heavily', 'label': "I'd like to be heavily involved"}]),
+    html_radios('can_test', 'If you work in a care setting, could we test any solutions with you?',
+     [{'value': 'yes', 'label': 'Yes'},
+      {'value': 'maybe', 'label': 'Maybe'},
+      {'value': 'no', 'label': 'No'},
+      {'value': 'not_care', 'label': "I don't work in a care setting"}])
+]
+
+html_questions = "\n".join([html_pad(question) for question in questions])
+
 form_template=f"""
 <h1>Submit a challenge or idea</h1>
 
@@ -39,37 +75,7 @@ form_template=f"""
     Please do not include any confidential or patient information.
   </p>
 
-  {html_text_input('email', 'What is your email address?')}
-  {html_text_input('role', 'What is your role?')}
-  {html_text_input('place_of_work', 'What is your place of work?')}
-  {html_text_area('challenge', 'Describe the challenge or problem (100 words max)',
-    hint="e.g. GPs don't have full clarity on what over the counter medicines their patients are taking")}
-  {html_text_area('problem_impact', 'What impact does it have on patients and/or staff? (100 words max)',
-    hint="e.g. Patients may be prescribed medications that interact with their over the counter medicines causing risks to their health.")}
-  {html_text_area('current', 'What is currently being done to help ease this problem? (100 words max)',
-    hint="e.g. GPs are having to spend considerable time repeatedly asking patients what over the counter medicines they have recently taken.")}
-  {html_text_area('solution_impact', 'What would be the impact of solving this challenge? (100 words max)',
-   hint="e.g. We could improve overall patient safety and reduce the risk of dangerous drug interactions.")}
-  {html_conditional_radios('has_idea', 'Do you have an idea that could help solve this challenge?',
-    html_text_area('idea', 'What is your idea?'))}
-  {html_conditional_radios('has_been_tested', 'Has your idea has been tested before?',
-    html_text_area('evidence', 'What evidence could you provide that your idea would help?'))}
-  {html_checkboxes('focus_areas', 'Which of our focus areas does the problem apply to?',
-    [{'value': 'burden', 'label': 'Reduce the burden on staff'},
-     {'value': 'info', 'label': 'Help access clinical information'},
-     {'value': 'productivity', 'label': 'Improve health and care productivity'},
-     {'value': 'access', 'label': 'Provide tools to access services directly'},
-     {'value': 'safety', 'label': 'Improve safety across health and care systems'}])}
-  {html_radios('involvement', 'If we pursue this problem, how involved would you like to be?',
-    [{'value': 'not', 'label': 'I just want to submit a problem'},
-     {'value': 'up_to_date', 'label': 'Keep me up to date on progress'},
-     {'value': 'involve', 'label': "Involve me when I'm needed"},
-     {'value': 'heavily', 'label': "I'd like to be heavily involved"}])}
-  {html_radios('can_test', 'If you work in a care setting, could we test any solutions with you?',
-     [{'value': 'yes', 'label': 'Yes'},
-      {'value': 'maybe', 'label': 'Maybe'},
-      {'value': 'no', 'label': 'No'},
-      {'value': 'not_care', 'label': "I don't work in a care setting"}])}
+  {html_questions}
   {html_conditional_checkbox('consent', 'true',
     'Click here to agree',
     html_button('Submit'),

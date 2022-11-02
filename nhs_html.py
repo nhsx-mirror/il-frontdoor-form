@@ -152,3 +152,10 @@ def html_conditional_radios(name, legend, conditional_content):
       </div>
     </div>
   """))
+
+def html_pad(content):
+  return f"""
+    <div class="nhsuk-u-padding-bottom-9">
+      {content}
+    </div>
+  """
