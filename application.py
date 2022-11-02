@@ -77,7 +77,7 @@ form_template=f"""
 
   {html_questions}
   {html_conditional_checkbox('consent', 'true',
-    'Click here to agree',
+    'I agree',
     html_button('Submit'),
     hint='Your personal data will be stored in compliance with the <a href="https://www.england.nhs.uk/privacy-policy/">NHS England Privacy Policy</a>.  It will be used for the purposes of evaluating the information you send us, which may include contacting you in the future to discuss this challenge or other related challenges.  We may also invite you to anonymously provide feedback on your experience in order to improve this service. Please address any data protection requests to <a href="mailto:england.innovation.lab@nhs.net">england.innovation.lab@nhs.net</a>.')}
 </form>
