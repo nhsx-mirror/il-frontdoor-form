@@ -125,3 +125,32 @@ def html_conditional_checkbox(name, checkbox_value, checkbox_label, conditional_
         </div>
     </div>
 """
+
+def html_conditional_radios(name, legend, conditional_content):
+  return html_form_group(html_fieldset(f"""
+    <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--l">
+      <h1 class="nhsuk-fieldset__heading">
+        {legend}
+      </h1>
+    </legend>
+    <div class="nhsuk-radios nhsuk-radios--conditional">
+
+      <div class="nhsuk-radios__item">
+        <input class="nhsuk-radios__input" id="{name}-1" name="{name}" type="radio" value="true" aria-controls="conditional-{name}-1" aria-expanded="false">
+        <label class="nhsuk-label nhsuk-radios__label" for="{name}-1">
+          Yes
+        </label>
+      </div>
+
+      <div class="nhsuk-radios__conditional nhsuk-radios__conditional--hidden" id="conditional-{name}-1">
+        {conditional_content}
+      </div>
+
+      <div class="nhsuk-radios__item">
+        <input class="nhsuk-radios__input" id="{name}-2" name="{name}" type="radio" value="false" aria-controls="conditional-{name}-2" aria-expanded="false">
+        <label class="nhsuk-label nhsuk-radios__label" for="{name}-2">
+          No
+        </label>
+      </div>
+    </div>
+  """))

@@ -50,9 +50,9 @@ form_template=f"""
     hint="e.g. GPs are having to spend considerable time repeatedly asking patients what over the counter medicines they have recently taken.")}
   {html_text_area('solution_impact', 'What would be the impact of solving this challenge? (100 words max)',
    hint="e.g. We could improve overall patient safety and reduce the risk of dangerous drug interactions.")}
-  {html_conditional_checkbox('has_idea', 'true', 'Click if you have an idea that could help solve this challenge.',
+  {html_conditional_radios('has_idea', 'Do you have an idea that could help solve this challenge?',
     html_text_area('idea', 'What is your idea?'))}
-  {html_conditional_checkbox('has_been_tested', 'true', 'Click if your idea has been tested before.',
+  {html_conditional_radios('has_been_tested', 'Has your idea has been tested before?',
     html_text_area('evidence', 'What evidence could you provide that your idea would help?'))}
   {html_checkboxes('focus_areas', 'Which of our focus areas does the problem apply to?',
     [{'value': 'burden', 'label': 'Reduce the burden on staff'},
