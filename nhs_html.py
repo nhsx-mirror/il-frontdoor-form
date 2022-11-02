@@ -16,7 +16,7 @@ def html_fieldset(content):
 
 def html_text_input(name, label):
     return html_form_group(f"""
-      <label class="nhsuk-label" for="{name}">
+      <label class="nhsuk-label--s" for="{name}">
         {label}
       </label>
       <input class="nhsuk-input" id="{name}" name="{name}" type="text">
@@ -24,7 +24,7 @@ def html_text_input(name, label):
 
 def html_text_area(name, label, hint=None):
     html_label = f"""
-      <label class="nhsuk-label" for="{name}">
+      <label class="nhsuk-label--s" for="{name}">
         {label}
       </label>
     """
