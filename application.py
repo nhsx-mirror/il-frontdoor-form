@@ -8,6 +8,7 @@ from nhs_html import *
 
 load_dotenv()
 form = Bottle()
+# This variable name has to match the filename otherwise Elastic Beanstalk doesn't know which one is the root app
 application = Bottle()
 application.mount('/submit-a-challenge', form)
 client = boto3.client('sns', region_name='eu-west-2')
@@ -154,7 +155,7 @@ def serve_static(filename):
 @form.post('/post')
 def send():
     send_message(request.params)
-    redirect(f'/thanks')
+    redirect(default_routes.path('/thanks'))
 
 @form.route('/thanks')
 def thanks():
