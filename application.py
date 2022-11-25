@@ -7,12 +7,12 @@ from dotenv import load_dotenv
 from nhs_html import *
 
 load_dotenv()
-root = Bottle()
+form = Bottle()
 application = Bottle()
-root.mount('/submit-a-challenge', application)
+application.mount('/submit-a-challenge', form)
 client = boto3.client('sns', region_name='eu-west-2')
 
-@root.route('/')
+@application.route('/')
 def root_route():
     redirect(f'/submit-a-challenge')
 
@@ -143,28 +143,28 @@ def send_message(params):
     msg = render_email(request.params)
     send_email(subj, msg)
 
-@application.route('/')
+@form.route('/')
 def index():
     return page(body=form_template)
 
-@application.route('/static/<filename:path>')
+@form.route('/static/<filename:path>')
 def serve_static(filename):
     return static_file(filename, root='static/')
 
-@application.post('/post')
+@form.post('/post')
 def send():
     send_message(request.params)
     redirect(f'/thanks')
 
-@application.route('/thanks')
+@form.route('/thanks')
 def thanks():
     return page(body=template('thanks'))
 
-@application.route('/_dashboard')
+@form.route('/_dashboard')
 def dashboard():
     return page(body=template('dashboard'))
 
-@application.post('/smoke')
+@form.post('/smoke')
 def smoke():
     isotime = datetime.now().isoformat()
 
@@ -179,7 +179,7 @@ def smoke():
 
 def main():
     port = os.getenv('PORT', '3000')
-    root.run(host="localhost", port=int(port))
+    application.run(host="localhost", port=int(port))
 
 if __name__ == "__main__":
     main()
