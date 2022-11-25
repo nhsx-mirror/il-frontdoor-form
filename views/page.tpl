@@ -9,22 +9,22 @@
     <link href="https://assets.nhs.uk/" rel="preconnect" crossorigin>
 
     <!-- Styles -->
-    <link rel="stylesheet" href="/static/css/nhsuk-6.1.2.min.css">
+    <link rel="stylesheet" href="{{routes.css('nhsuk-6.1.2.min.css')}}">
 
     <!-- Scripts -->
-    <script src="/static/js/nhsuk-6.1.2.min.js" defer></script>
+    <script src="{{routes.js('nhsuk-6.1.2.min.js')}}" defer></script>
 
     <!-- Favicons -->
-    <link rel="shortcut icon" href="/static/assets/favicons/favicon.ico" type="image/x-icon">
-    <link rel="apple-touch-icon" href="/static/assets/favicons/apple-touch-icon-180x180.png">
-    <link rel="mask-icon" href="/static/assets/favicons/favicon.svg" color="#005eb8">
-    <link rel="icon" sizes="192x192" href="/static/assets/favicons/favicon-192x192.png">
-    <meta name="msapplication-TileImage" content="/static/assets/favicons/mediumtile-144x144.png">
+    <link rel="shortcut icon" href="{{routes.favicon('favicon.ico')}}" type="image/x-icon">
+    <link rel="apple-touch-icon" href="{{routes.favicon('apple-touch-icon-180x180.png')}}">
+    <link rel="mask-icon" href="{{routes.favicon('favicon.svg')}}" color="#005eb8">
+    <link rel="icon" sizes="192x192" href="{{routes.favicon('favicon-192x192.png')}}">
+    <meta name="msapplication-TileImage" content="{{routes.favicon('mediumtile-144x144.png')}}">
     <meta name="msapplication-TileColor" content="#005eb8">
-    <meta name="msapplication-square70x70logo" content="/static/assets/favicons/smalltile-70x70.png">
-    <meta name="msapplication-square150x150logo" content="/static/assets/favicons/mediumtile-150x150.png">
-    <meta name="msapplication-wide310x150logo" content="/static/assets/favicons/widetile-310x150.png">
-    <meta name="msapplication-square310x310logo" content="/static/assets/favicons/largetile-310x310.png">
+    <meta name="msapplication-square70x70logo" content="{{routes.favicon('smalltile-70x70.png')}}">
+    <meta name="msapplication-square150x150logo" content="{{routes.favicon('mediumtile-150x150.png')}}">
+    <meta name="msapplication-wide310x150logo" content="{{routes.favicon('widetile-310x150.png')}}">
+    <meta name="msapplication-square310x310logo" content="{{routes.favicon('largetile-310x310.png')}}">
 
     <title>Innovation Lab Front Door</title>
   </head>

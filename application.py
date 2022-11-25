@@ -1,5 +1,5 @@
 import os
-from bottle import Bottle, run, template, route, redirect, static_file, request
+from bottle import Bottle, run, template as orig_template, route, redirect, static_file, request
 from datetime import datetime
 import boto3
 from dotenv import load_dotenv
@@ -7,8 +7,35 @@ from dotenv import load_dotenv
 from nhs_html import *
 
 load_dotenv()
+root = Bottle()
 application = Bottle()
+root.mount('/submit-a-challenge', application)
 client = boto3.client('sns', region_name='eu-west-2')
+
+@root.route('/')
+def root_route():
+    redirect(f'/submit-a-challenge')
+
+class Routes:
+    def __init__(self, root_path):
+        self.root_path = root_path
+
+    def css(self, filename):
+        return f"{self.root_path}/static/css/{filename}"
+
+    def js(self, filename):
+        return f"{self.root_path}/static/js/{filename}"
+
+    def favicon(self, filename):
+        return f"{self.root_path}/static/assets/favicons/{filename}"
+
+    def path(self, relative_path):
+        return f"/{self.root_path.strip('/')}/{relative_path.lstrip('/')}"
+
+default_routes = Routes('/submit-a-challenge')
+routes = default_routes
+def template(name, **kwargs):
+    return orig_template(name, routes=default_routes, **kwargs)
 
 def page(**kwargs):
     return template('page', **kwargs)
@@ -52,7 +79,7 @@ html_questions = "\n".join([html_pad(question) for question in questions])
 form_template=f"""
 <h1>Submit a challenge or idea</h1>
 
-<form action="/post" method="post">
+<form action="{routes.path('/post')}" method="post">
   <p>
     Our roadmap is shaped by real challenges and ideas from the health and social care system, and we want to hear from anyone working within it.
     If you have a challenge or idea that you think could be answered with innovative thinking and technology, but you aren't sure exactly how, we'd love to hear about it.
@@ -148,11 +175,11 @@ def smoke():
         Sent at {isotime}.
     """)
 
-    return page(body=template('dashboard_sent'))
+    return page(body=template('dashboard_sent', isotime=isotime))
 
 def main():
     port = os.getenv('PORT', '3000')
-    application.run(host="localhost", port=int(port))
+    root.run(host="localhost", port=int(port))
 
 if __name__ == "__main__":
     main()
